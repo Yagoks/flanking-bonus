@@ -1,0 +1,12 @@
+{
+  "FLANKING": {
+    "Label": "Flanking",
+    "SettingBonus": "Flanking bonus",
+    "SettingBonusHint": "Added to melee weapon attack rolls against a flanked target. 0 turns flanking off.",
+    "SettingFamiliarNames": "Familiar names",
+    "SettingFamiliarNamesHint": "Tokens whose name contains one of these words (comma separated) never flank. Familiars summoned with Chris's Premades Find Familiar are recognized automatically.",
+    "Flanked": "Flanked",
+    "SettingIcon": "Flanked icon on the target",
+    "SettingIconHint": "Show the Flanked status on creatures that are flanked right now. It is only a marker: the bonus is always worked out from token positions when the attack is made."
+  }
+}
