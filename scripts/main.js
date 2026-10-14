@@ -96,6 +96,7 @@ export function flankingAlly(attacker, target, familiars = familiarTokenIds()) {
   target = docOf(target);
   const scene = target?.parent;
   if (!attacker || !scene || (attacker.parent !== scene) || (attacker === target)) return null;
+  if (!inCombat(scene)) return null;
   if (!opposed(attacker, target) || !canFlank(attacker, familiars)) return null;
   if (!isAdjacent(attacker, target)) return null;
 
@@ -112,7 +113,13 @@ export function flankingAlly(attacker, target, familiars = familiarTokenIds()) {
 /** Is any visible creature flanking `target`? Used for the status icon. */
 export function isFlanked(target, familiars = familiarTokenIds()) {
   target = docOf(target);
+  if (!inCombat(target.parent)) return false;
   return target.parent.tokens.some(t => !t.hidden && (t !== target) && flankingAlly(t, target, familiars));
+}
+
+/** Flanking only counts while a combat has started on the scene (an unlinked combat counts for the active scene). */
+function inCombat(scene) {
+  return game.combats.some(c => c.started && (c.scene ? (c.scene === scene) : scene.active));
 }
 
 /** Flanking only happens between Friendly and Hostile tokens. */
@@ -228,6 +235,11 @@ function registerIconHooks() {
     if (geometryKeys.some(k => k in changes)) queueRefresh();
   });
   Hooks.on("canvasReady", queueRefresh);
+  Hooks.on("createCombat", queueRefresh);
+  Hooks.on("deleteCombat", queueRefresh);
+  Hooks.on("updateCombat", (combat, changes) => {
+    if (("round" in changes) || ("scene" in changes)) queueRefresh();
+  });
   Hooks.on("updateScene", (scene, changes) => {
     if ("active" in changes) queueRefresh();
   });

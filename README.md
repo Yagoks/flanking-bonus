@@ -6,6 +6,7 @@ Homebrew flanking for Foundry VTT v13 and dnd5e 5.x: a melee weapon attack gets 
 
 A target is flanked when:
 
+- a **combat has started** on its scene (round 1 or later; an encounter not linked to a scene counts for the active scene). Outside combat there is no bonus and no icon;
 - the attacker and at least one ally are both **adjacent** to it (within 5 ft, including diagonals and within 5 ft of elevation);
 - a line between the centers of their spaces passes through **opposite sides or opposite corners** of the target's space (the DMG optional rule). Large and larger creatures flank if any square of their space qualifies;
 - one side is **Friendly** and the other **Hostile** (token disposition). The ally has the same disposition as the attacker. Neutral and Secret tokens never flank and are never flanked;
@@ -28,7 +29,7 @@ The bonus is added to the attack formula as `+ 2[Flanking]`, so it shows in the 
 
 ### Flanked icon
 
-Creatures that are flanked right now get the **Flanked** status icon, and it goes away when the position changes. The icon follows token moves, conditions and hit points on the scene the players are on and the scene the GM is viewing. Only the active GM's client writes it.
+Creatures that are flanked right now get the **Flanked** status icon, and it goes away when the position changes or the combat ends. The icon follows token moves, conditions and hit points on the scene the players are on and the scene the GM is viewing. Only the active GM's client writes it.
 
 The icon is the same "flanked" status Midi-QOL registers, so it shows as active in the Token HUD. The effect has no changes: Midi's version grants advantage, this one doesn't. The +2 always comes from token positions at the moment of the attack, never from the icon. Without Midi-QOL, the module registers its own Flanked status.
 
