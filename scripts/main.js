@@ -310,9 +310,12 @@ function isAdjacent(doc, target) {
 }
 
 /**
- * DMG flanking: a line between the centers of the two creatures' spaces passes through
- * opposite sides or opposite corners of the target's space. Any qualifying square of a
- * Large or larger creature counts.
+ * Theia flanking: the two allies and the target form a straight line through the target's space.
+ * - Same row: one on the left side, the other on the right side.
+ * - Same column: one above, the other below.
+ * - Opposite corners, on the diagonal.
+ * Any square of a Large or larger ally counts. A "crooked" line (different rows or columns) doesn't flank, even if it
+ * crosses the target's space.
  */
 function onOppositeSides(a, b, target) {
   if (!isSquareGrid(target)) {
@@ -325,30 +328,20 @@ function onOppositeSides(a, b, target) {
   }
 
   const box = boundsOf(cellsOf(target));
-  const center = c => ({ x: c.x + 0.5, y: c.y + 0.5 });
+  const left = c => c.x === box.left - 1, right = c => c.x === box.right;
+  const above = c => c.y === box.top - 1, below = c => c.y === box.bottom;
+  const inRows = c => (c.y >= box.top) && (c.y < box.bottom);
+  const inCols = c => (c.x >= box.left) && (c.x < box.right);
+  const aligned = (p, q) => {
+    if ((p.y === q.y) && inRows(p) && ((left(p) && right(q)) || (right(p) && left(q)))) return true; // same row
+    if ((p.x === q.x) && inCols(p) && ((above(p) && below(q)) || (below(p) && above(q)))) return true; // same column
+    // Opposite corners.
+    return (left(p) && above(p) && right(q) && below(q)) || (right(p) && above(p) && left(q) && below(q));
+  };
   for (const ca of adjacentCells(a, box)) {
     for (const cb of adjacentCells(b, box)) {
-      const p = center(ca), q = center(cb);
-      const leftRight = crossesVertical(p, q, box.left, box) && crossesVertical(p, q, box.right, box);
-      const topBottom = crossesHorizontal(p, q, box.top, box) && crossesHorizontal(p, q, box.bottom, box);
-      if (leftRight || topBottom) return true;
+      if (aligned(ca, cb) || aligned(cb, ca)) return true;
     }
   }
   return false;
-}
-
-function crossesVertical(p, q, x, box) {
-  if (Math.abs(q.x - p.x) < EPSILON) return false;
-  const t = (x - p.x) / (q.x - p.x);
-  if ((t < -EPSILON) || (t > 1 + EPSILON)) return false;
-  const y = p.y + (t * (q.y - p.y));
-  return (y >= box.top - EPSILON) && (y <= box.bottom + EPSILON);
-}
-
-function crossesHorizontal(p, q, y, box) {
-  if (Math.abs(q.y - p.y) < EPSILON) return false;
-  const t = (y - p.y) / (q.y - p.y);
-  if ((t < -EPSILON) || (t > 1 + EPSILON)) return false;
-  const x = p.x + (t * (q.x - p.x));
-  return (x >= box.left - EPSILON) && (x <= box.right + EPSILON);
 }

@@ -2,7 +2,7 @@
   "id": "flanking-bonus",
   "title": "Flanking Bonus",
   "description": "Homebrew flanking for dnd5e: a melee weapon attack gets +2 to hit when the attacker and an ally stand on opposite sides of the target during combat. Detected automatically from token positions; works with or without Midi-QOL.",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "authors": [
     {
       "name": "Yagoks"
@@ -43,5 +43,5 @@
   ],
   "url": "https://github.com/Yagoks/flanking-bonus",
   "manifest": "https://github.com/Yagoks/flanking-bonus/releases/latest/download/module.json",
-  "download": "https://github.com/Yagoks/flanking-bonus/releases/download/v0.2.1/module.zip"
+  "download": "https://github.com/Yagoks/flanking-bonus/releases/download/v0.2.2/module.zip"
 }

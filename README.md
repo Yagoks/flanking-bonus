@@ -8,7 +8,7 @@ A target is flanked when:
 
 - a **combat has started** on its scene (round 1 or later; an encounter not linked to a scene counts for the active scene). Outside combat there is no bonus and no icon;
 - the attacker and at least one ally are both **adjacent** to it (within 5 ft, including diagonals and within 5 ft of elevation);
-- a line between the centers of their spaces passes through **opposite sides or opposite corners** of the target's space (the DMG optional rule). Large and larger creatures flank if any square of their space qualifies;
+- the two of them and the target form a **straight line** through the target's space: the **same row** (left and right sides), the **same column** (above and below) or **opposite corners**. A crooked line (different rows or columns) doesn't flank, even if it crosses a Large target. Large and larger creatures flank if any square of their space qualifies;
 - one side is **Friendly** and the other **Hostile** (token disposition). The ally has the same disposition as the attacker. Neutral and Secret tokens never flank and are never flanked;
 - neither of them is incapacitated, paralyzed, petrified, stunned, unconscious, dead or at 0 HP, and the ally is not hidden by the GM;
 - neither of them is a **familiar**. Companions and other summons flank normally.
