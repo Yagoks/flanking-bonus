@@ -117,9 +117,14 @@ export function isFlanked(target, familiars = familiarTokenIds()) {
   return target.parent.tokens.some(t => !t.hidden && (t !== target) && flankingAlly(t, target, familiars));
 }
 
-/** Flanking only counts while a combat has started on the scene (an unlinked combat counts for the active scene). */
+/**
+ * Flanking only counts while a combat has started on the scene. An unlinked combat counts for the scenes its
+ * combatants are on (and for the active scene).
+ */
 function inCombat(scene) {
-  return game.combats.some(c => c.started && (c.scene ? (c.scene === scene) : scene.active));
+  return game.combats.some(c => c.started && (c.scene
+    ? (c.scene === scene)
+    : (scene.active || c.combatants.some(cb => cb.sceneId === scene.id))));
 }
 
 /** Flanking only happens between Friendly and Hostile tokens. */
@@ -237,6 +242,8 @@ function registerIconHooks() {
   Hooks.on("canvasReady", queueRefresh);
   Hooks.on("createCombat", queueRefresh);
   Hooks.on("deleteCombat", queueRefresh);
+  Hooks.on("createCombatant", queueRefresh);
+  Hooks.on("deleteCombatant", queueRefresh);
   Hooks.on("updateCombat", (combat, changes) => {
     if (("round" in changes) || ("scene" in changes)) queueRefresh();
   });
