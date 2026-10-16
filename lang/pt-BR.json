@@ -2,7 +2,7 @@
   "FLANKING": {
     "Label": "Flanqueando",
     "SettingBonus": "Bônus de flanco",
-    "SettingBonusHint": "Somado aos ataques corpo a corpo com arma contra um alvo flanqueado. 0 desliga o flanco.",
+    "SettingBonusHint": "Somado aos ataques corpo a corpo contra um alvo flanqueado. 0 desliga o flanco.",
     "SettingFamiliarNames": "Nomes de familiar",
     "SettingFamiliarNamesHint": "Tokens cujo nome contém uma destas palavras (separadas por vírgula) nunca flanqueiam. Familiares invocados pelo Find Familiar do Chris's Premades são reconhecidos automaticamente.",
     "Flanked": "Flanqueado",

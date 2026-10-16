@@ -4,6 +4,8 @@ const STATUS_IMG = "modules/flanking-bonus/icons/flanked.svg";
 
 // Conditions that keep a creature from flanking.
 const INCAPACITATED = ["incapacitated", "paralyzed", "petrified", "stunned", "unconscious", "dead"];
+// Melee attack rolls: melee weapon attacks (unarmed included) and melee spell attacks. Ranged and thrown attacks don't flank.
+const MELEE = ["mwak", "msak"];
 const EPSILON = 1e-6;
 const { FRIENDLY, HOSTILE } = CONST.TOKEN_DISPOSITIONS;
 
@@ -48,7 +50,7 @@ Hooks.once("ready", () => {
 function addFlankingBonus(process, config) {
   const activity = process.subject;
   if (!activity) return;
-  if (activity.getActionType?.(config.options?.attackMode) !== "mwak") return;
+  if (!MELEE.includes(activity.getActionType?.(config.options?.attackMode))) return;
 
   const bonus = Number(game.settings.get(MODULE_ID, "bonus")) || 0;
   if (!bonus) return;
@@ -97,13 +99,13 @@ export function flankingAlly(attacker, target, familiars = familiarTokenIds()) {
   const scene = target?.parent;
   if (!attacker || !scene || (attacker.parent !== scene) || (attacker === target)) return null;
   if (!inCombat(scene)) return null;
-  if (!opposed(attacker, target) || !canFlank(attacker, familiars)) return null;
+  if (!opposed(attacker, target) || !canFlank(attacker, familiars) || !canSee(attacker, target)) return null;
   if (!isAdjacent(attacker, target)) return null;
 
   for (const ally of scene.tokens) {
     if ((ally === attacker) || (ally === target)) continue;
     if (ally.disposition !== attacker.disposition) continue;
-    if (ally.hidden || !canFlank(ally, familiars)) continue;
+    if (ally.hidden || !canFlank(ally, familiars) || !canSee(ally, target)) continue;
     if (!isAdjacent(ally, target)) continue;
     if (onOppositeSides(attacker, ally, target)) return ally;
   }
@@ -140,6 +142,25 @@ function canFlank(doc, familiars) {
   const hp = actor.system.attributes?.hp;
   if (hp?.max && (hp.value <= 0)) return false;
   return !isFamiliar(doc, familiars);
+}
+
+/**
+ * A creature can't flank an enemy it can't see: it is blinded, or the enemy is invisible. Blindsight and truesight
+ * (or a See Invisibility detection mode on the token, for an invisible enemy) let it see anyway.
+ */
+function canSee(doc, target) {
+  const actor = doc.actor;
+  if (!actor) return false;
+  const senses = actor.system.attributes?.senses ?? {};
+  const range = key => Number(senses.ranges?.[key] ?? senses[key]) || 0;
+  const reach = gridOf(doc).distance;
+  const blindsight = range("blindsight") >= reach, truesight = range("truesight") >= reach;
+  if (actor.statuses?.has("blinded") && !blindsight) return false;
+  if (target.actor?.statuses?.has("invisible")) {
+    const seeInvisibility = doc.detectionModes?.some(m => (m.id === "seeInvisibility") && (m.enabled !== false));
+    if (!blindsight && !truesight && !seeInvisibility) return false;
+  }
+  return true;
 }
 
 /**
@@ -232,7 +253,7 @@ function flankedEffectData() {
 }
 
 function registerIconHooks() {
-  const geometryKeys = ["x", "y", "elevation", "width", "height", "disposition", "hidden", "name", "actorId", "delta"];
+  const geometryKeys = ["x", "y", "elevation", "width", "height", "disposition", "hidden", "name", "actorId", "delta", "detectionModes"];
 
   Hooks.on("createToken", queueRefresh);
   Hooks.on("deleteToken", queueRefresh);
@@ -259,7 +280,7 @@ function registerIconHooks() {
   Hooks.on("deleteActiveEffect", onEffect);
   Hooks.on("updateActiveEffect", onEffect);
   Hooks.on("updateActor", (actor, changes) => {
-    if (foundry.utils.hasProperty(changes, "system.attributes.hp")) queueRefresh();
+    if (foundry.utils.hasProperty(changes, "system.attributes.hp") || foundry.utils.hasProperty(changes, "system.attributes.senses")) queueRefresh();
   });
 }
 

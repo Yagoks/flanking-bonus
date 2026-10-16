@@ -1,6 +1,6 @@
 # Flanking Bonus
 
-Homebrew flanking for Foundry VTT v13 and dnd5e 5.x: a melee weapon attack gets **+2 to hit** when the attacker and an ally stand on opposite sides of the target. The module reads token positions at the moment of the attack; nothing needs to be marked by hand.
+Homebrew flanking for Foundry VTT v13 and dnd5e 5.x: a melee attack gets **+2 to hit** when the attacker and an ally stand on opposite sides of the target. The module reads token positions at the moment of the attack; nothing needs to be marked by hand.
 
 ## The rule
 
@@ -19,7 +19,12 @@ A token counts as a familiar when:
 - its name contains a word from the **Familiar names** setting (default `Familiar`, which matches Chris's Premades' default names such as "Familiar Coruja");
 - or its actor has the flag `flags.flanking-bonus.familiar` set to true.
 
-Only **melee weapon attacks** get the bonus. Unarmed strikes and natural weapons count. Thrown weapons and spell attacks don't. The attack must have exactly one target.
+Only **melee attack rolls** get the bonus: melee weapon attacks (unarmed strikes and natural weapons included) and melee spell attacks. Ranged weapon attacks, thrown weapons and ranged spell attacks (such as ranged cantrips) don't. The attack must have exactly one target.
+
+A creature can't flank an enemy it can't see. This applies to the attacker and to the ally:
+
+- a **blinded** creature doesn't flank, unless it has blindsight;
+- nobody flanks an **invisible** enemy, unless they have blindsight, truesight or a See Invisibility detection mode on the token.
 
 On hex and gridless scenes, "opposite" means the two creatures are at least 150° apart around the target.
 
