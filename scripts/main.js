@@ -1,6 +1,7 @@
 const MODULE_ID = "flanking-bonus";
 const STATUS_ID = "flanked";
 const STATUS_IMG = "modules/flanking-bonus/icons/flanked.svg";
+const STATUS_STATIC_ID = "dnd5eflanked0000"; // dnd5e staticID("dnd5eflanked"), as Midi-QOL builds it
 
 // Conditions that keep a creature from flanking.
 const INCAPACITATED = ["incapacitated", "paralyzed", "petrified", "stunned", "unconscious", "dead"];
@@ -36,8 +37,10 @@ Hooks.once("init", () => {
 
 Hooks.once("ready", () => {
   // Midi-QOL registers a "flanked" status; reuse its icon so the Token HUD shows it as active.
+  // Same static _id as Midi's, so Midi (which looks statuses up by _id) doesn't add a second "flanked" when
+  // custom-dnd5e rebuilds the list. v14 refuses duplicate status ids and then fails to load every scene.
   if (!CONFIG.statusEffects.some(s => s.id === STATUS_ID)) {
-    CONFIG.statusEffects.push({ id: STATUS_ID, name: "FLANKING.Flanked", img: STATUS_IMG });
+    CONFIG.statusEffects.push({ id: STATUS_ID, _id: STATUS_STATIC_ID, name: "FLANKING.Flanked", img: STATUS_IMG });
   }
   registerIconHooks();
   queueRefresh();
